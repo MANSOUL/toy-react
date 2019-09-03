@@ -3,5 +3,5 @@
 
 ## TODO
 - [x] 模版解析
-- [] diff算法
-- [] DOM
+- [ ] diff算法
+- [ ] DOM
