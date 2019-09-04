@@ -12,12 +12,12 @@ class HelloWorld extends Component {
 class App extends Component {
   render () {
     return t`
-      <${HelloWorld} />
+      <${HelloWorld}></${HelloWorld}>
     `
   }
 }
 
 render(
-  t`<${App} />`,
-  document.getElementById('app')
+  t`<${App}></${App}>`
+  // document.getElementById('app')
 )

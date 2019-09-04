@@ -40,7 +40,7 @@ const LL = {
     }
     if (lookAhead && lookAhead.type === TAG_OPEN) { // ahead 为开始，则其为当前的子tag
       currentNode = LL.tags(currentNode)
-    } else { // ahead 为 value
+    } else if (lookAhead && lookAhead.type === TAG_VALUE) { // ahead 为 value
       currentNode.value = lookAhead.value
       match(TAG_VALUE) // 进入token
     }

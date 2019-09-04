@@ -37,7 +37,7 @@ function parseToken (str) {
       length: matches[0].length
     }
   }
-  throw SyntaxError('语法错误')
+  throw SyntaxError('词法错误')
 }
 
 function parseAttr (attr) {
@@ -57,10 +57,10 @@ function parseAttr (attr) {
   return attrs
 }
 
-export default function parse (template) {
+export default function parse (templateObj) {
+  let template = templateObj.html
   let tokens = []
   let start = 0
-
   while (template.length > 0) {
     template = trim(template)
     const token = parseToken(template)
