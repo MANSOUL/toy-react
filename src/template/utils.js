@@ -1,31 +1,30 @@
-export function arrToMap(arr) {
-  let o = {};
+export function arrToMap (arr) {
+  const o = {}
   for (let index = 0; index < arr.length; index += 2) {
-    let key = arr[index];
-    let value = arr[index + 1];
-    o[key] = value;
+    const key = arr[index]
+    const value = arr[index + 1]
+    o[key] = value
   }
-  return o;
+  return o
 }
 
-export function tValue(value) {
+export function tValue (value) {
   if (value === undefined || value === null) {
-    return '';
+    return ''
   }
   if (Array.isArray(value)) {
-    return value.join('');
+    return value.join('')
   }
-  return value;
+  return value
 }
 
-export function temlateValue(value) {
-  let regString = /^(['"]).*(\1)$/;
-  let regNumber = /^\d+$/;
+export function temlateValue (value) {
+  const regString = /^(['"]).*(\1)$/
+  const regNumber = /^\d+$/
   if (regString.test(value)) {
-    value = value.replace(/^"|"$/g, '');
-  }else if (regNumber.test(value)) {
-    value = Number(value);
+    value = value.replace(/^"|"$/g, '')
+  } else if (regNumber.test(value)) {
+    value = Number(value)
   }
-  // console.log(value);
-  return value;
+  return value
 }

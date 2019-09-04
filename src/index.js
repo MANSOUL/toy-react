@@ -1,1 +1,1 @@
-export { t, ast } from './template/t';
+export { t, ast } from './template/t'
