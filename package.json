@@ -1,0 +1,23 @@
+{
+  "name": "toy-react",
+  "version": "1.0.0",
+  "description": "造轮子之从0-1实现一个react",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup -c rollup.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MANSOUL/toy-react.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MANSOUL/toy-react/issues"
+  },
+  "homepage": "https://github.com/MANSOUL/toy-react#readme",
+  "dependencies": {
+    "rollup": "^1.20.3"
+  }
+}

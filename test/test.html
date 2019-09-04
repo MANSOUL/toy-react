@@ -8,8 +8,9 @@
 </head>
 <body>
   <div id="app"></div>
-  <script type="module">
-    import {t, ast} from './t.js';
+  <script src="../dist/bundle.js"></script>
+  <script>
+    const { ast, t } = toyReact;
     function render () {
       let name = 'Fruit List';
       let fruits = ['Apple', 'Banana', 'Peach'];
