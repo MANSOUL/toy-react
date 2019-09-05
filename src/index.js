@@ -1,4 +1,5 @@
-import { t as _t, ast as _ast } from './template/t'
+import _t from './template/t'
+import _ast from './template/ast'
 import _Component from './vdom/component'
 import _render from './diff/render'
 

@@ -1,8 +1,6 @@
-import lexical from './lexical.js'
-import syntax from './syntax.js'
 import { tValue } from './utils.js'
 
-export function t (statics, ...values) {
+export default function t (statics, ...values) {
   let html = ''
   const components = {}
   statics.map((s, i) => {
@@ -18,8 +16,4 @@ export function t (statics, ...values) {
     html,
     components
   }
-}
-
-export function ast (template) {
-  return syntax(lexical(template)).children[0]
 }

@@ -1,8 +1,9 @@
 /* eslint-disable no-unmodified-loop-condition */
 import { TAG_CLOSE, TAG_OPEN, TAG_VALUE, TAG_ATTR_NAME, TAG_ATTR_VALUE } from './tagType.js'
-import { arrToMap } from './utils.js'
+import { arrToMap, isComponent } from './utils.js'
+import ast from './ast'
 
-let currentIndex, lookAhead, tokens
+let currentIndex, lookAhead, tokens, components
 
 const nextToken = () => {
   lookAhead = tokens[++currentIndex]
@@ -24,8 +25,21 @@ const LL = {
   },
   tags (currentNode) {
     while (lookAhead) { // 在TAG_CLOSE后，处理多个token
-      let node = { type: lookAhead.value, value: null, props: null, children: [] }
+      const value = lookAhead.value
+      const Component = components[value] // 用于判断是组件，还是普通元素
+      let node = {
+        type: Component || value,
+        value: null,
+        props: {},
+        children: []
+      }
       node = LL.tag(node)
+      // 当前节点解析完成后判断它是否为组件
+      if (isComponent(node.type)) {
+        const children = ast(new Component(node.props).render())
+        node.children.push(children)
+      }
+
       currentNode.children.push(node)
       if (lookAhead && lookAhead.type === TAG_CLOSE) {
         break
@@ -61,10 +75,11 @@ const LL = {
   }
 }
 
-export default function generateAST (ts) {
+export default function generateAST (ts, cs) {
   tokens = ts
+  components = cs
   currentIndex = 0
   lookAhead = tokens[currentIndex]
   const ast = LL.start()
-  return ast
+  return ast.children[0]
 }

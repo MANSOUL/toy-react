@@ -18,6 +18,6 @@ class App extends Component {
 }
 
 render(
-  t`<${App}></${App}>`
+  t`<${App} test="1"></${App}>`
   // document.getElementById('app')
 )

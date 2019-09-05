@@ -29,3 +29,7 @@ export function temlateValue (value) {
   }
   return value
 }
+
+export function isComponent (c) {
+  return typeof c === 'function'
+}
