@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../dist/bundle.js"></script>
+  <script>
+    const { ast, t, Component, render } = toyReact;
+
+    class HelloWorld extends Component {
+      render () {
+        return t`
+          <p>
+            ${
+              this.props.greeting.split('').map(c => {
+                return t`<span>${c}</span>`
+              })
+            }
+          </p>
+        `
+      }
+    }
+
+    class App extends Component {
+      render () {
+        return t`
+          <div>
+            <${HelloWorld} greeting="Hello World!"></${HelloWorld}>
+            <${HelloWorld} greeting="Hello World!"></${HelloWorld}>
+          </div>
+        `
+      }
+    }
+
+    render(
+      t`<${App} test="1"></${App}>`,
+      document.getElementById('app')
+    )
+  </script>
+</body>
+</html>

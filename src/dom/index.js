@@ -31,6 +31,9 @@ export function createNode (node) {
     children,
     value
   } = node
+  if (isComponent(type)) {
+    return createNode(node.children[0])
+  }
   const $el = createElment(type)
   setProps($el, props)
   children.length > 0 && appendChildren($el, children)
@@ -38,7 +41,7 @@ export function createNode (node) {
   return $el
 }
 
-export function render (ast) {
+export default function render (ast) {
   const $root = createNode(ast)
   return $root
 }

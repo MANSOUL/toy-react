@@ -2,9 +2,14 @@ import toyReact, { Component, t, render } from '../src'
 
 class HelloWorld extends Component {
   render () {
-    const greeting = 'Hello World!'
     return t`
-      <p>${greeting}</p>
+      <p>
+        ${
+          this.props.greeting.split('').map(c => {
+            return t`<span>${c}</span>`
+          })
+        }
+      </p>
     `
   }
 }
@@ -12,7 +17,10 @@ class HelloWorld extends Component {
 class App extends Component {
   render () {
     return t`
-      <${HelloWorld}></${HelloWorld}>
+      <div>
+        <${HelloWorld} greeting="Hello World!"></${HelloWorld}>
+        <${HelloWorld} greeting="Hello World!"></${HelloWorld}>
+      </div>
     `
   }
 }
