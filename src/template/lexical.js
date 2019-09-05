@@ -75,5 +75,6 @@ export default function parse (templateObj) {
     }
     template = template.substr(start)
   }
+  console.log(tokens)
   return tokens
 }

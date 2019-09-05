@@ -1,6 +1,7 @@
 /* eslint-disable no-unmodified-loop-condition */
 import { TAG_CLOSE, TAG_OPEN, TAG_VALUE, TAG_ATTR_NAME, TAG_ATTR_VALUE } from './tagType.js'
-import { arrToMap, isComponent } from './utils.js'
+import { arrToMap } from './utils.js'
+import { isComponent } from '../vdom/utils'
 import ast from './ast'
 
 let currentIndex, lookAhead, tokens, components
