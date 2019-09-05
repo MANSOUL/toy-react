@@ -10,7 +10,7 @@
   <div id="app"></div>
   <script src="../dist/bundle.js"></script>
   <script>
-    const { ast, t, Component, render } = toyReact;
+    const { t, Component, render } = toyReact;
 
     class HelloWorld extends Component {
       render () {
@@ -31,7 +31,7 @@
         return t`
           <div>
             <${HelloWorld} greeting="Hello World!"></${HelloWorld}>
-            <${HelloWorld} greeting="Hello World!"></${HelloWorld}>
+            <${HelloWorld} greeting="Hello China!"></${HelloWorld}>
           </div>
         `
       }
