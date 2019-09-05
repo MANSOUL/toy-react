@@ -181,6 +181,7 @@
         node = this.tag(node);
         // 当前节点解析完成后判断它是否为组件
         if (isComponent(node.type)) {
+          node.props.children = node.value;
           const children = ast(new Component(node.props).render());
           node.children.push(children);
         }
