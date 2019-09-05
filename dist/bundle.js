@@ -41,11 +41,15 @@
     return value
   }
 
+  function isComponent (c) {
+    return typeof c === 'function'
+  }
+
   function t (statics, ...values) {
     let html = '';
     const components = {};
     statics.map((s, i) => {
-      if (typeof values[i] === 'function') {
+      if (isComponent(values[i])) {
         const Component = values[i];
         html += s + Component.name;
         components[Component.name] = Component;
@@ -140,10 +144,6 @@
       template = template.substr(start);
     }
     return tokens
-  }
-
-  function isComponent (c) {
-    return typeof c === 'function'
   }
 
   /* eslint-disable no-unmodified-loop-condition */

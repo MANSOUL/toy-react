@@ -32,7 +32,15 @@
   <div id="app"></div>
   <script src="../dist/bundle.js"></script>
   <script>
-    const { t, Component, render } = toyReact;
+    const {ast, t, Component, render } = toyReact;
+
+    class HelloChildren extends Component {
+      render() {
+        return t`
+          <span>I am Hello's child.</span>
+        `
+      }
+    }
 
     class HelloWorld extends Component {
       render () {
@@ -43,6 +51,7 @@
                 return t`<span>${c}</span>`
               })
             }
+            <span>${this.props.children}</span>
           </p>
         `
       }
@@ -52,7 +61,9 @@
       render () {
         return t`
           <div>
-            <${HelloWorld} greeting="Hello World!"></${HelloWorld}>
+            <${HelloWorld} greeting="Hello World!">
+              小兄弟
+            </${HelloWorld}>
             <${HelloWorld} greeting="Hello China!"></${HelloWorld}>
           </div>
         `
@@ -63,6 +74,8 @@
       t`<${App} test="1"></${App}>`,
       document.getElementById('app')
     )
+
+    console.log(ast(t`<${App} test="1"></${App}>`))
   </script>
 </body>
 </html>
