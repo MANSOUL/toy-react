@@ -7,7 +7,7 @@ const REG_TAG_VALUE = /[^<]+/
 const REG_TAG_ATTR = /([\w-]+)=("?[^"]+"?)/g
 
 function trim (str) {
-  return str.replace(/^\s+|\s+$/g, '')
+  return str.replace(/^\n+\s+|\s+$/g, '')
 }
 
 function parseToken (str) {
