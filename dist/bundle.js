@@ -20,7 +20,7 @@
     }
     // 数组处理
     if (Array.isArray(value)) {
-      if (value[0].html) {
+      if (value[0] && value[0].html) {
         let h = '';
         value.map(item => (h += item.html));
         return h
@@ -49,12 +49,25 @@
     let html = '';
     const components = {};
     statics.map((s, i) => {
-      if (isComponent(values[i])) {
+      const v = values[i];
+      if (isComponent(v)) {
         const Component = values[i];
         html += s + Component.name;
         components[Component.name] = Component;
+      } else if (v && v.html && v.components) { // 已经经过了t解析后的对象
+        html += s + v.html;
+        for (const k in v.components) {
+          if (
+            Object.prototype.hasOwnProperty.call(v.components, k) &&
+            !Object.prototype.hasOwnProperty.call(components, k)
+          ) {
+            components[k] = v.components[k];
+          }
+        }
+      } else if (Array.isArray(v) && v[0] && v[0].type) { // this.props.children，使用slot替代
+        html += s + '<slot></slot>';
       } else {
-        html += s + tValue(values[i]);
+        html += s + tValue(v);
       }
     });
     return {
@@ -179,10 +192,22 @@
           children: []
         };
         node = this.tag(node);
+
         // 当前节点解析完成后判断它是否为组件
         if (isComponent(node.type)) {
-          node.props.children = node.value;
+          const propsChildren = [...node.children]; // 如果是组件，那么它里面的children，就放到props。children中去
+          node.children = [];
+          if (node.value) {
+            propsChildren.push(node.value);
+          }
+          node.props.children = propsChildren;
+
           const children = ast(new Component(node.props).render());
+          // 查找slot并将slot替换的位置替换为props.children
+          const slotIndex = children.children.findIndex(c => c.type === 'slot');
+          if (~slotIndex) {
+            children.children.splice(slotIndex, 1, ...node.props.children);
+          }
           node.children.push(children);
         }
 

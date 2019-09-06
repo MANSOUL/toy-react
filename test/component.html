@@ -44,14 +44,15 @@
 
     class HelloWorld extends Component {
       render () {
+        console.log(this.props)
         return t`
           <p>
+            ${this.props.children}
             ${
               this.props.greeting.split('').map(c => {
                 return t`<span>${c}</span>`
               })
             }
-            <span>${this.props.children}</span>
           </p>
         `
       }
@@ -62,7 +63,7 @@
         return t`
           <div>
             <${HelloWorld} greeting="Hello World!">
-              小兄弟
+              ${t`<i>Child</i>`}
             </${HelloWorld}>
             <${HelloWorld} greeting="Hello China!"></${HelloWorld}>
           </div>
@@ -75,7 +76,7 @@
       document.getElementById('app')
     )
 
-    console.log(ast(t`<${App} test="1"></${App}>`))
-  </script>
+    // console.log(ast(t`<${App} test="1"></${App}>`))
+    </script>
 </body>
 </html>

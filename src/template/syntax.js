@@ -35,10 +35,22 @@ export default class Syntax {
         children: []
       }
       node = this.tag(node)
+
       // 当前节点解析完成后判断它是否为组件
       if (isComponent(node.type)) {
-        node.props.children = node.value
+        const propsChildren = [...node.children] // 如果是组件，那么它里面的children，就放到props。children中去
+        node.children = []
+        if (node.value) {
+          propsChildren.push(node.value)
+        }
+        node.props.children = propsChildren
+
         const children = ast(new Component(node.props).render())
+        // 查找slot并将slot替换的位置替换为props.children
+        const slotIndex = children.children.findIndex(c => c.type === 'slot')
+        if (~slotIndex) {
+          children.children.splice(slotIndex, 1, ...node.props.children)
+        }
         node.children.push(children)
       }
 

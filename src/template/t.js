@@ -5,12 +5,25 @@ export default function t (statics, ...values) {
   let html = ''
   const components = {}
   statics.map((s, i) => {
-    if (isComponent(values[i])) {
+    const v = values[i]
+    if (isComponent(v)) {
       const Component = values[i]
       html += s + Component.name
       components[Component.name] = Component
+    } else if (v && v.html && v.components) { // 已经经过了t解析后的对象
+      html += s + v.html
+      for (const k in v.components) {
+        if (
+          Object.prototype.hasOwnProperty.call(v.components, k) &&
+          !Object.prototype.hasOwnProperty.call(components, k)
+        ) {
+          components[k] = v.components[k]
+        }
+      }
+    } else if (Array.isArray(v) && v[0] && v[0].type) { // this.props.children，使用slot替代
+      html += s + '<slot></slot>'
     } else {
-      html += s + tValue(values[i])
+      html += s + tValue(v)
     }
   })
   return {

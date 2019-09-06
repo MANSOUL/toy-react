@@ -14,7 +14,7 @@ export function tValue (value) {
   }
   // 数组处理
   if (Array.isArray(value)) {
-    if (value[0].html) {
+    if (value[0] && value[0].html) {
       let h = ''
       value.map(item => (h += item.html))
       return h
