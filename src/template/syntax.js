@@ -80,8 +80,13 @@ export default class Syntax {
   attrs (currentNode) {
     const props = []
     while (this.lookAhead) {
-      props.push(this.lookAhead.value)
-      this.match(this.lookAhead.type)
+      const { value, type } = this.lookAhead
+      if (this.functions[value]) {
+        props.push(this.functions[value])
+      } else {
+        props.push(value)
+      }
+      this.match(type)
       if (!this.lookAhead || (this.lookAhead.type !== TAG_ATTR_NAME && this.lookAhead.type !== TAG_ATTR_VALUE)) {
         currentNode.props = arrToMap(props)
         break
@@ -90,9 +95,10 @@ export default class Syntax {
     return currentNode
   }
 
-  parse (ts, cs) {
+  parse (ts, cs, fs) {
     this.tokens = ts
     this.components = cs
+    this.functions = fs
     this.currentIndex = 0
     this.lookAhead = this.tokens[this.currentIndex]
     const ast = this.start()

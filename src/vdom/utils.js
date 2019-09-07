@@ -1,3 +1,6 @@
 export function isComponent (c) {
-  return typeof c === 'function'
+  if (c && c.prototype && typeof c.prototype.render === 'function') {
+    return true
+  }
+  return false
 }

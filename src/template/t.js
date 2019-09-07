@@ -1,15 +1,21 @@
 import { tValue } from './utils.js'
 import { isComponent } from '../vdom/utils'
+import { isFunction } from '../utils/type'
 
 export default function t (statics, ...values) {
   let html = ''
   const components = {}
+  const functions = {}
   statics.map((s, i) => {
     const v = values[i]
     if (isComponent(v)) {
       const Component = values[i]
       html += s + Component.name
       components[Component.name] = Component
+    } else if (isFunction(v)) {
+      const func = values[i]
+      html += s + func.name
+      functions[func.name] = func
     } else if (v && v.html && v.components) { // 已经经过了t解析后的对象
       html += s + v.html
       for (const k in v.components) {
@@ -28,6 +34,7 @@ export default function t (statics, ...values) {
   })
   return {
     html,
-    components
+    components,
+    functions
   }
 }

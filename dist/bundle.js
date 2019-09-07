@@ -42,18 +42,34 @@
   }
 
   function isComponent (c) {
-    return typeof c === 'function'
+    if (c && c.prototype && typeof c.prototype.render === 'function') {
+      return true
+    }
+    return false
+  }
+
+  function type (o) {
+    return Object.prototype.toString.call(o).slice(8, -1)
+  }
+
+  function isFunction (f) {
+    return type(f) === 'Function'
   }
 
   function t (statics, ...values) {
     let html = '';
     const components = {};
+    const functions = {};
     statics.map((s, i) => {
       const v = values[i];
       if (isComponent(v)) {
         const Component = values[i];
         html += s + Component.name;
         components[Component.name] = Component;
+      } else if (isFunction(v)) {
+        const func = values[i];
+        html += s + func.name;
+        functions[func.name] = func;
       } else if (v && v.html && v.components) { // 已经经过了t解析后的对象
         html += s + v.html;
         for (const k in v.components) {
@@ -72,7 +88,8 @@
     });
     return {
       html,
-      components
+      components,
+      functions
     }
   }
 
@@ -262,8 +279,13 @@
     attrs (currentNode) {
       const props = [];
       while (this.lookAhead) {
-        props.push(this.lookAhead.value);
-        this.match(this.lookAhead.type);
+        const { value, type } = this.lookAhead;
+        if (this.functions[value]) {
+          props.push(this.functions[value]);
+        } else {
+          props.push(value);
+        }
+        this.match(type);
         if (!this.lookAhead || (this.lookAhead.type !== TAG_ATTR_NAME && this.lookAhead.type !== TAG_ATTR_VALUE)) {
           currentNode.props = arrToMap(props);
           break
@@ -272,9 +294,10 @@
       return currentNode
     }
 
-    parse (ts, cs) {
+    parse (ts, cs, fs) {
       this.tokens = ts;
       this.components = cs;
+      this.functions = fs;
       this.currentIndex = 0;
       this.lookAhead = this.tokens[this.currentIndex];
       const ast = this.start();
@@ -283,7 +306,7 @@
   }
 
   function ast (template) {
-    return new Syntax().parse(parse(template), template.components)
+    return new Syntax().parse(parse(template), template.components, template.functions)
   }
 
   class Component {
