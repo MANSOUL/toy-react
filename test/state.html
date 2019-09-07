@@ -57,9 +57,11 @@
           greetings: ['World', 'Asia', 'China'],
           index: 0
         }
+        this.handleButtonClick = this.handleButtonClick.bind(this)
       }
 
-      handleButtonClick() {
+      handleButtonClick(e) {
+        console.log(e)
         let index = this.state.index;
         index = index === 2 ? 0 : ++index;
         this.setState({

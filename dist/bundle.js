@@ -320,10 +320,16 @@
     }
   }
 
+  const REG_EVENT = /^on/;
+
   function setProps ($el, props) {
     for (const k in props) {
       if (Object.prototype.hasOwnProperty.call(props, k)) {
-        $el.setAttribute(k, props[k]);
+        if (k.match(REG_EVENT)) {
+          $el.addEventListener(k.replace(REG_EVENT, '').toLowerCase(), props[k]);
+        } else {
+          $el.setAttribute(k, props[k]);
+        }
       }
     }
   }
