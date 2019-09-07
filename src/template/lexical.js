@@ -79,6 +79,9 @@ export default function parse (templateObj) {
         type: TAG_OPEN,
         value: token.value
       })
+      if (token.attrs) { // 继续解析属性
+        tokens = tokens.concat(parseAttr(token.attrs))
+      }
       tokens.push({
         type: TAG_CLOSE,
         value: token.value
@@ -89,9 +92,9 @@ export default function parse (templateObj) {
         value: token.value
       }
       tokens.push(t)
-    }
-    if (token.attrs) { // 继续解析属性
-      tokens = tokens.concat(parseAttr(token.attrs))
+      if (token.attrs) { // 继续解析属性
+        tokens = tokens.concat(parseAttr(token.attrs))
+      }
     }
     start = token.index + token.length
     template = template.substr(start)

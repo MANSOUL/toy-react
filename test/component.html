@@ -44,6 +44,7 @@
 
     class HelloWorld extends Component {
       render () {
+        console.log(this.props)
         return t`
           <p>
             ${this.props.children}
@@ -62,9 +63,10 @@
         return t`
           <div>
             <${HelloWorld} greeting="Hello World!">
-                ${t`<i>Child</i>`}
-                ${t`<${HelloChildren}></${HelloChildren}>`}
-              </${HelloWorld}>
+              ${t`<i>Child</i>`}
+              ${t`<${HelloChildren}></${HelloChildren}>`}
+            </${HelloWorld}>
+            <${HelloWorld} greeting="Hello Asia!" />
             <${HelloWorld} greeting="Hello China!"></${HelloWorld}>
           </div>
         `

@@ -76,12 +76,14 @@
     }
   }
 
+  const TAG_SINGLE = 'TagSingle';
   const TAG_OPEN = 'TagOpen';
   const TAG_CLOSE = 'TagClose';
   const TAG_VALUE = 'TagValue';
   const TAG_ATTR_NAME = 'TagAttrName';
   const TAG_ATTR_VALUE = 'TagAttrValue';
 
+  const REG_TAG_SINGLE = /^<([\w]+)\s*([^>]*)\s*\/>/; // 自闭合标签
   const REG_TAG_OPEN = /^<([\w]+)\s*([^>]*)\s*>/;
   const REG_TAG_CLOSE = /^<\/([\w]+)\s*>/;
   const REG_TAG_VALUE = /[^<]+/;
@@ -92,7 +94,16 @@
   }
 
   function parseToken (str) {
-    if (str.match(REG_TAG_OPEN)) {
+    if (str.match(REG_TAG_SINGLE)) {
+      const matches = str.match(REG_TAG_SINGLE);
+      return {
+        type: TAG_SINGLE,
+        value: matches[1],
+        index: matches.index,
+        length: matches[0].length,
+        attrs: matches[2]
+      }
+    } else if (str.match(REG_TAG_OPEN)) {
       const matches = str.match(REG_TAG_OPEN);
       return {
         type: TAG_OPEN,
@@ -145,15 +156,29 @@
     while (template.length > 0) {
       template = trim(template);
       const token = parseToken(template);
-      const t = {
-        type: token.type,
-        value: token.value
-      };
-      start = token.index + token.length;
-      tokens.push(t);
-      if (token.attrs) {
-        tokens = tokens.concat(parseAttr(token.attrs));
+      if (token.type === TAG_SINGLE) { // 自闭合标签
+        tokens.push({
+          type: TAG_OPEN,
+          value: token.value
+        });
+        if (token.attrs) { // 继续解析属性
+          tokens = tokens.concat(parseAttr(token.attrs));
+        }
+        tokens.push({
+          type: TAG_CLOSE,
+          value: token.value
+        });
+      } else {
+        const t = {
+          type: token.type,
+          value: token.value
+        };
+        tokens.push(t);
+        if (token.attrs) { // 继续解析属性
+          tokens = tokens.concat(parseAttr(token.attrs));
+        }
       }
+      start = token.index + token.length;
       template = template.substr(start);
     }
     return tokens
