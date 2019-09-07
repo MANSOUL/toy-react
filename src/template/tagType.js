@@ -1,3 +1,4 @@
+export const TAG_SINGLE = 'TagSingle'
 export const TAG_OPEN = 'TagOpen'
 export const TAG_CLOSE = 'TagClose'
 export const TAG_VALUE = 'TagValue'
