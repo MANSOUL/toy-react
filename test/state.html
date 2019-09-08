@@ -64,9 +64,11 @@
         console.log(e)
         let index = this.state.index;
         index = index === 2 ? 0 : ++index;
-        this.setState({
-          index
-        })
+        // this.setState({
+        //   index
+        // })
+        this.state.index = index
+        console.log(this.render())
       }
 
       render () {

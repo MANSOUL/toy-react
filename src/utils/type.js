@@ -5,3 +5,7 @@ export function type (o) {
 export function isFunction (f) {
   return type(f) === 'Function'
 }
+
+export function isString (s) {
+  return type(s) === 'String'
+}
