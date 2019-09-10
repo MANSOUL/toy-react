@@ -21,7 +21,7 @@ function dfsWalk (newNode, oldNode, index, patches) {
       })
     }
   } else if (
-    oldNode.type === newNode.type &&
+    oldNode.tagName === newNode.tagName &&
     oldNode.key === newNode.key
   ) {
     const propsPatches = diffProps(newNode, oldNode)
