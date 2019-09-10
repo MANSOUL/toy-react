@@ -30,9 +30,16 @@
 </head>
 <body>
   <div id="app"></div>
-  <script src="../dist/bundle.js"></script>
-  <script>
-    const {t, Component, render } = toyReact;
+  <script type="module">
+    import {ast, t, Component, render } from '../src/index.js';
+
+    class HelloChildren extends Component {
+      render() {
+        return t`
+          <span>I am Hello's child.</span>
+        `
+      }
+    }
 
     class HelloWorld extends Component {
       render () {
@@ -51,39 +58,22 @@
     }
 
     class App extends Component {
-      constructor(props) {
-        super(props);
-        this.state = {
-          greetings: ['World', 'Asia', 'China'],
-          index: 0
-        }
-        this.handleButtonClick = this.handleButtonClick.bind(this)
-      }
-
-      handleButtonClick(e) {
-        console.log(e)
-        let index = this.state.index;
-        index = index === 2 ? 0 : ++index;
-        // this.setState({
-        //   index
-        // })
-        this.state.index = index
-        console.log(this.render())
-      }
-
       render () {
-        const {index, greetings} = this.state
         return t`
           <div>
-            <${HelloWorld} greeting="Hello ${greetings[index]}!" />
-            <button onClick=${this.handleButtonClick}>Change Greeting</button>
+            <${HelloWorld} greeting="Hello World!">
+              ${t`<i>Child</i>`}
+              ${t`<${HelloChildren}></${HelloChildren}>`}
+            </${HelloWorld}>
+            <${HelloWorld} greeting="Hello Asia!" />
+            <${HelloWorld} greeting="Hello China!"></${HelloWorld}>
           </div>
         `
       }
     }
 
     render(
-      t`<${App}></${App}>`,
+      t`<${App} test="1"></${App}>`,
       document.getElementById('app')
     )
 

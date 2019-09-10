@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = global || self, factory(global.toyReact = {}));
-}(this, function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = global || self, global.toyReact = factory());
+}(this, function () { 'use strict';
 
   function arrToMap (arr) {
     const o = {};
@@ -320,82 +320,148 @@
     }
   }
 
+  const _ = {};
+
+  _.type = function (obj) {
+    return Object.prototype.toString.call(obj).replace(/\[object\s|\]/g, '')
+  };
+
+  _.isArray = function isArray (list) {
+    return _.type(list) === 'Array'
+  };
+
+  _.slice = function slice (arrayLike, index) {
+    return Array.prototype.slice.call(arrayLike, index)
+  };
+
+  _.truthy = function truthy (value) {
+    return !!value
+  };
+
+  _.isString = function isString (list) {
+    return _.type(list) === 'String'
+  };
+
+  _.each = function each (array, fn) {
+    for (var i = 0, len = array.length; i < len; i++) {
+      fn(array[i], i);
+    }
+  };
+
+  _.toArray = function toArray (listLike) {
+    if (!listLike) {
+      return []
+    }
+
+    var list = [];
+
+    for (var i = 0, len = listLike.length; i < len; i++) {
+      list.push(listLike[i]);
+    }
+
+    return list
+  };
+
+  const $ = {};
   const REG_EVENT = /^on/;
 
-  function setProps ($el, props) {
-    for (const k in props) {
-      if (Object.prototype.hasOwnProperty.call(props, k)) {
-        if (k.match(REG_EVENT)) {
-          $el.addEventListener(k.replace(REG_EVENT, '').toLowerCase(), props[k]);
+  function setProp ($el, k, value) {
+    if (k.match(REG_EVENT)) {
+      $el.addEventListener(k.replace(REG_EVENT, '').toLowerCase(), value);
+    } else {
+      $el.setAttribute(k, value);
+    }
+  }
+
+  $.setAttr = function setAttr (node, key, value) {
+    switch (key) {
+      case 'style':
+        node.style.cssText = value;
+        break
+      case 'value':
+        var tagName = node.tagName || '';
+        tagName = tagName.toLowerCase();
+        if (
+          tagName === 'input' || tagName === 'textarea'
+        ) {
+          node.value = value;
         } else {
-          $el.setAttribute(k, props[k]);
+          // if it is not a input or textarea, use `setAttribute` to set
+          node.setAttribute(key, value);
         }
+        break
+      default:
+        setProp(node, key, value);
+        break
+    }
+  };
+
+  class Element {
+    constructor (tagName, props = {}, children = []) {
+      this.tagName = tagName;
+      this.props = props;
+      this.children = children;
+      this.key = props.key;
+      this.count = children.length;
+    }
+
+    render () {
+      var el = document.createElement(this.tagName);
+      var props = this.props;
+
+      for (var propName in props) {
+        var propValue = props[propName];
+        $.setAttr(el, propName, propValue);
       }
+
+      _.each(this.children, function (child) {
+        var childEl = (child instanceof Element)
+          ? child.render()
+          : document.createTextNode(child);
+        el.appendChild(childEl);
+      });
+
+      return el
     }
   }
 
-  function appendChildren ($el, children) {
-    const $fragment = document.createDocumentFragment();
-    children.map(node => {
-      $fragment.appendChild(createNode(node));
-    });
-    return $el.appendChild($fragment)
+  function createVDOM (template) {
+    const astTree = ast(template);
+    return toVirtualElment(astTree)
   }
 
-  function setTextContent ($el, content) {
-    $el.textContent = content;
+  function toVirtualElment (node) {
+    const create = function (currentNode) {
+      const children = currentNode.children;
+      const elementChildren = children.map(child => {
+        return create(child)
+      });
+      if (currentNode.value) {
+        elementChildren.push(currentNode.value);
+      }
+      if (isComponent(currentNode.type)) {
+        return elementChildren[0]
+      } else {
+        const element = new Element(currentNode.type, currentNode.props, elementChildren);
+        return element
+      }
+    };
+    return create(node)
   }
 
-  function createElment (type) {
-    return document.createElement(type)
-  }
-
-  function createNode (node) {
-    const {
-      type,
-      props,
-      children,
-      value
-    } = node;
-    if (isComponent(type)) {
-      return createNode(node.children[0])
-    }
-    const $el = createElment(type);
-    setProps($el, props);
-    children.length > 0 && appendChildren($el, children);
-    value && setTextContent($el, value);
-    return $el
-  }
-
-  function render (ast) {
-    const $root = createNode(ast);
-    return $root
-  }
-
-  function render$1 (template, $root) {
-    const vdom = ast(template);
-    const $dom = render(vdom);
-    $root && $root.appendChild($dom);
-    return $dom
+  function render (template, $root) {
+    const vdomTree = createVDOM(template);
+    $root.appendChild(vdomTree.render());
+    return vdomTree
   }
 
   var index = {
-    t: t,
-    ast: ast,
-    Component: Component,
-    render: render$1
+    t,
+    ast,
+    Component,
+    render
   };
-  const t$1 = t;
-  const ast$1 = ast;
-  const Component$1 = Component;
-  const render$2 = render$1;
 
-  exports.Component = Component$1;
-  exports.ast = ast$1;
-  exports.default = index;
-  exports.render = render$2;
-  exports.t = t$1;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
+  return index;
 
 }));

@@ -1,4 +1,8 @@
-import toyReact, { Component, t, render } from '../src'
+import toyReact from '../src'
+import ast from '../src/template/ast'
+import vdom from '../src/vdom/vdom'
+
+const { Component, t, render } = toyReact
 
 class HelloWorld extends Component {
   render () {
@@ -25,7 +29,10 @@ class App extends Component {
   }
 }
 
-render(
-  t`<${App} test="1"></${App}>`
-  // document.getElementById('app')
-)
+// render(
+//   t`<${App} test="1"></${App}>`
+//   // document.getElementById('app')
+// )
+
+console.log(ast(t`<${App} test="1"></${App}>`))
+console.log(vdom(t`<${App} test="1"></${App}>`))

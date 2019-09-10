@@ -1,4 +1,4 @@
-import _ from './util'
+import _ from '../utils/util'
 import patch from './patch'
 import listDiff from './listDiff'
 

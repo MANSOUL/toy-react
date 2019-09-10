@@ -1,4 +1,4 @@
-var _ = require('./util')
+var _ = require('../utils/util')
 
 var REPLACE = 0
 var REORDER = 1

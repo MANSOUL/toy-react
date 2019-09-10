@@ -1,18 +1,32 @@
+import _ from '../utils/util'
+import $ from '../dom/index'
+
 class Element {
   constructor (tagName, props = {}, children = []) {
     this.tagName = tagName
     this.props = props
     this.children = children
     this.key = props.key
-    let count = 0
-    children.map((c, i) => {
-      if (c instanceof Element) {
-        count += c.count
-      } else {
-        children[i] = '' + c
-      }
+    this.count = children.length
+  }
+
+  render () {
+    var el = document.createElement(this.tagName)
+    var props = this.props
+
+    for (var propName in props) {
+      var propValue = props[propName]
+      $.setAttr(el, propName, propValue)
+    }
+
+    _.each(this.children, function (child) {
+      var childEl = (child instanceof Element)
+        ? child.render()
+        : document.createTextNode(child)
+      el.appendChild(childEl)
     })
-    this.count = count
+
+    return el
   }
 }
 

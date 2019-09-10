@@ -32,7 +32,7 @@
   <div id="app"></div>
   <script src="../dist/bundle.js"></script>
   <script>
-    const {ast, t, Component, render } = toyReact;
+    const {t, Component, render } = toyReact;
 
     class HelloChildren extends Component {
       render() {
@@ -49,8 +49,8 @@
           <p>
             ${this.props.children}
             ${
-              this.props.greeting.split('').map(c => {
-                return t`<span>${c}</span>`
+              this.props.greeting.split('').map((c, index) => {
+                return t`<span key=${index}>${c}</span>`
               })
             }
           </p>
@@ -73,9 +73,11 @@
       }
     }
 
+    console.log(
     render(
       t`<${App} test="1"></${App}>`,
       document.getElementById('app')
+    )
     )
 
     // console.log(ast(t`<${App} test="1"></${App}>`))
