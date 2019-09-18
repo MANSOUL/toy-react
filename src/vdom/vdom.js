@@ -3,7 +3,8 @@ import Element from './element'
 import { isComponent } from './utils'
 
 export default function createVDOM (template) {
-  const astTree = ast(template)
+  const astTree = ast(template) // 这颗树充当整个应用，应当被记录下来
+  console.log(astTree)
   return toVirtualElment(astTree)
 }
 

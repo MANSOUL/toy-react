@@ -44,13 +44,15 @@ export default class Syntax {
           propsChildren.push(node.value)
         }
         node.props.children = propsChildren
-
-        const children = ast(new Component(node.props).render())
+        const oComponent = new Component(node.props)
+        const children = ast(oComponent.render())
         // 查找slot并将slot替换的位置替换为props.children
         const slotIndex = children.children.findIndex(c => c.type === 'slot')
         if (~slotIndex) {
           children.children.splice(slotIndex, 1, ...node.props.children)
         }
+        // 记录下当前组件实例用于后续的更新渲染
+        node.$instance = oComponent
         node.children.push(children)
       }
 

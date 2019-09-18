@@ -35,8 +35,17 @@
     const {t, Component, render } = toyReact;
 
     class HelloWorld extends Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          test: 'yoyo'
+        }
+      }
+
       render () {
+        console.log(this.state.test)
         console.log(this.props)
+        this.state.test = 'haha'
         return t`
           <p>
             ${this.props.children}
