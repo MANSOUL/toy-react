@@ -43,10 +43,15 @@
     }
 
     class HelloWorld extends Component {
+      handleClick = () => {
+        console.log('hi')
+        console.log(this._astNode)
+      }
+
       render () {
         console.log(this.props)
         return t`
-          <p>
+          <p onClick=${this.handleClick}>
             ${this.props.children}
             ${
               this.props.greeting.split('').map((c, index) => {
