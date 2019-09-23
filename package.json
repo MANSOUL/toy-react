@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "rollup -c rollup.config.js",
+    "build": "rollup -w -c rollup.config.js",
     "esm": "node -r esm test/component.js"
   },
   "repository": {
@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/MANSOUL/toy-react#readme",
   "dependencies": {
-    "rollup": "^1.20.3"
+    "rollup": "^1.20.3",
+    "rollup-plugin-serve": "^1.0.1"
   },
   "devDependencies": {
     "eslint": "^6.3.0",
