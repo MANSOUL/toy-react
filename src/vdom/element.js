@@ -8,6 +8,9 @@ class Element {
     this.children = children
     this.key = props.key
     this.count = children.length
+    children.forEach(c => {
+      (c instanceof Element) && (c.$parent = this)
+    })
   }
 
   render () {

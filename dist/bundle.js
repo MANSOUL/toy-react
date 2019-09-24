@@ -405,6 +405,9 @@
       this.children = children;
       this.key = props.key;
       this.count = children.length;
+      children.forEach(c => {
+        (c instanceof Element) && (c.$parent = this);
+      });
     }
 
     render () {
@@ -427,14 +430,7 @@
     }
   }
 
-  function createVDOM (template) {
-    const astTree = ast(template); // 这颗树充当整个应用，应当被记录下来
-    // 将这棵树的节点与对应的组件节点相关联，在调用setState后进行更新
-    console.log(astTree);
-    return toVirtualElment(astTree)
-  }
-
-  function toVirtualElment (node) {
+  function vdom (node) {
     const create = function (currentNode) {
       const children = currentNode.children;
       const elementChildren = children.map(child => {
@@ -444,11 +440,9 @@
         elementChildren.push(currentNode.value);
       }
       if (isComponent(currentNode.type)) {
-        const $instance = currentNode.$instance;
-        $instance._astNode = currentNode;
         // 在此处为组件重新设置一个render函数，将解析过后的Element在这个函数中定义，
         // 那么在下一次重新渲染时就不需要在重新解析模版了
-        console.log(elementChildren[0]);
+        currentNode.$instance.$vdom = elementChildren[0];
         return elementChildren[0]
       } else {
         const element = new Element(currentNode.type, currentNode.props, elementChildren);
@@ -458,9 +452,18 @@
     return create(node)
   }
 
+  function renderVDOM(vdom, $root) {
+    if($root.firstChild && $root.firstChild.nodeType === 1) {
+      $root.replaceChild(vdom.render(), $root.firstChild);
+    } else {
+      $root.appendChild(vdom.render());
+    }
+  }
+
   function render (template, $root) {
-    const vdomTree = createVDOM(template);
-    $root.appendChild(vdomTree.render());
+    const vdomTree = vdom(ast(template));
+    renderVDOM(vdomTree, $root);
+    window.vdomTree = vdomTree;
     return vdomTree
   }
 
@@ -468,7 +471,9 @@
     t,
     ast,
     Component,
-    render
+    render,
+    renderVDOM,
+    vdom
   };
 
   return index;

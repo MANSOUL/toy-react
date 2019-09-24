@@ -19,6 +19,8 @@
 
     p {
       margin: 10px;
+      user-select: none;
+      cursor: pointer;
     }
     
     span {
@@ -32,7 +34,7 @@
   <div id="app"></div>
   <script src="./bundle.js"></script>
   <script>
-    const {t, Component, render } = toyReact;
+    const {t, Component, render, ast, renderVDOM, vdom } = toyReact;
 
     class HelloChildren extends Component {
       render() {
@@ -51,15 +53,22 @@
       }
 
       handleClick = () => {
-        console.log('hi')
-        console.log(this._astNode)
         this.state.count++
-        console.log(this._astNode.$instance.render())
+        const index = this.$vdom.$parent.children.indexOf(this.$vdom)
+        if(~index) {
+          const $vdom = vdom(ast(this.render()))
+          $vdom.$parent = this.$vdom.$parent
+          this.$vdom.$parent.children[index] = $vdom
+          this.$vdom = $vdom
+        }
+        renderVDOM(window.vdomTree, document.getElementById('app'))
       }
 
       render () {
+        console.log(this.props)
         return t`
           <p onClick=${this.handleClick}>
+            <${HelloChildren} />
             <span>${this.state.count}</span>
             ${this.props.children}
             ${
