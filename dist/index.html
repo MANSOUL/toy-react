@@ -19,6 +19,24 @@
       return Treact.createElement('p', {}, `Hello Component, My name is : ${props.name}`)
     }
 
+    function Counter() {
+      const [count, setCount] = Treact.useState(0)
+      const [count1, setCount1] = Treact.useState(0)
+      return Treact.createElement('div', null, 
+        Treact.createElement('p', null, `Click ${count} times`),
+        Treact.createElement('button', {
+          onClick: () => {
+            setCount((c) => c + 1)
+          }
+        }, `Click Me`),
+        Treact.createElement('button', {
+          onClick: () => {
+            setCount1((c) => c + 1)
+          }
+        }, `Click Me ${count1} times`)
+      )
+    }
+
     Treact.render(
       Treact.createElement(
         'div',
@@ -28,6 +46,7 @@
         Treact.createElement('p', {}, 'Hello P2'),
         Treact.createElement('p', {}, 'Hello P3'),
         Treact.createElement(Component, {name: 'Wangyudan'}),
+        Treact.createElement(Counter),
         ...childrenP
       ),
       document.getElementById('app')
