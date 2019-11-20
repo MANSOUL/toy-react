@@ -1,0 +1,34 @@
+{
+  "name": "toy-react",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "start": "rollup -w -c rollup.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MANSOUL/toy-react.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MANSOUL/toy-react/issues"
+  },
+  "homepage": "https://github.com/MANSOUL/toy-react#readme",
+  "dependencies": {
+    "rollup": "^1.20.3",
+    "rollup-plugin-serve": "^1.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.3.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.2.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "esm": "^3.2.25",
+    "rollup-plugin-livereload": "^1.0.4"
+  }
+}

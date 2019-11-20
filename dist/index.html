@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="./bundle.js"></script>
+  <script>
+    Treact.render(
+      Treact.createElement(
+        'div',
+        {},
+        Treact.createElement('h1', {}, 'Hello World!'),
+        Treact.createElement('p', {}, 'Hello P'),
+        Treact.createElement('p', {}, 'Hello P2'),
+        Treact.createElement('p', {}, 'Hello P3')
+      ),
+      document.getElementById('app')
+    )
+  </script>
+</body>
+</html>
