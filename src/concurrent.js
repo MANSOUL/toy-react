@@ -1,4 +1,5 @@
 import { createDOM, setProperty } from './dom'
+import { reconcileChildren } from './reconcile'
 
 /**
  * 时间切片
@@ -59,26 +60,7 @@ function performUnitOfWork (fiber) {
     setProperty(fiber.dom, props)
   }
 
-  let index = 0
-  let prevSibling = null
-  while (index < props.children.length) {
-    const element = props.children[index]
-    const newFiber = {
-      type: element.type,
-      props: element.props,
-      dom: null,
-      parent: fiber
-    }
-
-    if (index === 0) {
-      fiber.child = newFiber
-    } else {
-      prevSibling.sibling = newFiber
-    }
-
-    prevSibling = newFiber
-    index++
-  }
+  reconcileChildren(fiber, props.children)
 
   if (fiber.child) {
     return fiber.child

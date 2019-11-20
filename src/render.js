@@ -5,7 +5,8 @@ export default function render (element, container) {
     dom: container,
     props: {
       children: [element]
-    }
+    },
+    alternate: null
   }
   setUnitOfWork(fiberRoot)
   setWipRoot(fiberRoot)
