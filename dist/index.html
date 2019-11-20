@@ -10,6 +10,13 @@
   <div id="app"></div>
   <script src="./bundle.js"></script>
   <script>
+    const childrenP = []
+    for (let index = 4; index < 50; index++) {
+      childrenP.push(Treact.createElement('p', {}, `Hello P${index}`))
+    }
+
+
+
     Treact.render(
       Treact.createElement(
         'div',
@@ -17,7 +24,8 @@
         Treact.createElement('h1', {}, 'Hello World!'),
         Treact.createElement('p', {}, 'Hello P'),
         Treact.createElement('p', {}, 'Hello P2'),
-        Treact.createElement('p', {}, 'Hello P3')
+        Treact.createElement('p', {}, 'Hello P3'),
+        ...childrenP
       ),
       document.getElementById('app')
     )

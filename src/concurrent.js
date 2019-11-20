@@ -1,5 +1,6 @@
-import { createDOM, setProperty } from './dom'
+import { createDOM, updateDOM } from './dom'
 import { reconcileChildren } from './reconcile'
+import { UPDATE, PLACEMENT, DELETION } from './types'
 
 /**
  * 时间切片
@@ -8,18 +9,31 @@ import { reconcileChildren } from './reconcile'
 
 let unitOfWork = null
 let wipRoot = null // 保存fiber tree的根结点， work in progress root
+const deletions = []
+const currentRoot = null // 记录当前工作到哪个节点
 
 function commitRoot () {
+  deletions.forEach(commitWork)
   commitWork(wipRoot.child)
   wipRoot = null
 }
 
+/**
+ * 操作节点，更新，删除，添加
+ * @param {Fiber} fiber
+ */
 function commitWork (fiber) {
   if (!fiber) {
     return
   }
-  const parentDOM = fiber.parent.dom
-  parentDOM.appendChild(fiber.dom)
+  if (fiber.effectTag === PLACEMENT) {
+    const parentDOM = fiber.parent.dom
+    parentDOM.appendChild(fiber.dom)
+  } else if (fiber.effectTag === UPDATE) {
+    updateDOM(fiber.dom, fiber.alternate.props, fiber.props)
+  } else if (fiber.effectTag === DELETION) {
+
+  }
   commitWork(fiber.child)
   commitWork(fiber.sibling)
 }
@@ -57,7 +71,7 @@ function performUnitOfWork (fiber) {
   const { type, dom, props } = fiber
   if (!dom) {
     fiber.dom = createDOM(type)
-    setProperty(fiber.dom, props)
+    updateDOM(fiber.dom, {}, fiber.props)
   }
 
   reconcileChildren(fiber, props.children)

@@ -1,5 +1,5 @@
 import { TEXT_ELEMENT } from './types'
-import { isProperty } from './utils'
+import { isProperty, isNew, isGone, isEvent } from './utils'
 
 /**
  *
@@ -15,13 +15,38 @@ export function createDOM (type) {
 
 /**
  *
- * @param {HTMLElement} $dom
- * @param {Object} props
+ * @param {HTMLElement} dom
+ * @param {Object} oldProps
+ * @param {Object} newProps
  */
-export function setProperty ($dom, props) {
-  Object.keys(props)
+export function updateDOM (dom, oldProps, newProps) {
+  Object.keys(oldProps)
+    .filter(isEvent)
+    .filter(key => !(key in newProps) || oldProps[key] !== newProps[key])
+    .forEach(key => {
+      const event = key.toLowerCase().substring(2)
+      dom.removeEventListener(event, oldProps[key])
+    })
+
+  Object.keys(oldProps)
     .filter(isProperty)
-    .forEach(name => {
-      $dom[name] = props[name]
+    .filter(isGone(oldProps, newProps))
+    .forEach(key => {
+      dom[key] = ''
+    })
+
+  Object.keys(newProps)
+    .filter(isEvent)
+    .filter(isNew(oldProps, newProps))
+    .forEach(key => {
+      const event = key.toLowerCase().substring(2)
+      dom.addEventListener(event, newProps[key])
+    })
+
+  Object.keys(newProps)
+    .filter(isProperty)
+    .filter(isNew(oldProps, newProps))
+    .forEach(key => {
+      dom[key] = newProps[key]
     })
 }
