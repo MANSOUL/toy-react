@@ -10,11 +10,12 @@ import { UPDATE, PLACEMENT, DELETION } from './types'
 let unitOfWork = null
 let wipRoot = null // 保存fiber tree的根结点， work in progress root
 const deletions = []
-const currentRoot = null // 记录当前工作到哪个节点
+let currentRoot = null // 记录当前工作到哪个节点
 
 function commitRoot () {
   deletions.forEach(commitWork)
   commitWork(wipRoot.child)
+  currentRoot = wipRoot
   wipRoot = null
 }
 
@@ -26,8 +27,17 @@ function commitWork (fiber) {
   if (!fiber) {
     return
   }
-  if (fiber.effectTag === PLACEMENT) {
-    const parentDOM = fiber.parent.dom
+
+  // 函数组件没有dom
+  // 为函数组件的子元素循环查找到父节点
+  let fiberParentDOM = fiber.parent
+  if (!fiberParentDOM.dom) {
+    fiberParentDOM = fiberParentDOM.parent
+  }
+  const parentDOM = fiberParentDOM.dom
+
+  // function component don't have dom
+  if (fiber.effectTag === PLACEMENT && fiber.dom) {
     parentDOM.appendChild(fiber.dom)
   } else if (fiber.effectTag === UPDATE) {
     updateDOM(fiber.dom, fiber.alternate.props, fiber.props)
@@ -68,13 +78,15 @@ window.requestIdleCallback(workLoop)
  * @param {Fiber} fiber
  */
 function performUnitOfWork (fiber) {
-  const { type, dom, props } = fiber
-  if (!dom) {
-    fiber.dom = createDOM(type)
-    updateDOM(fiber.dom, {}, fiber.props)
+  const isFunctionComponent = fiber.type instanceof Function
+
+  if (isFunctionComponent) {
+    updateFunctionComponent(fiber)
+  } else {
+    updateHostComponent(fiber)
   }
 
-  reconcileChildren(fiber, props.children)
+  reconcileChildren(fiber, fiber.props.children)
 
   if (fiber.child) {
     return fiber.child
@@ -88,10 +100,27 @@ function performUnitOfWork (fiber) {
   }
 }
 
+function updateFunctionComponent (fiber) {
+  const children = [fiber.type(fiber.props)]
+  reconcileChildren(fiber, children)
+}
+
+function updateHostComponent (fiber) {
+  const { type, dom, props } = fiber
+  if (!dom) {
+    fiber.dom = createDOM(type)
+    updateDOM(fiber.dom, {}, props)
+  }
+}
+
 export function setUnitOfWork (work) {
   unitOfWork = work
 }
 
 export function setWipRoot (fiberRoot) {
   wipRoot = fiberRoot
+}
+
+export function pushDeletion (fiber) {
+  deletions.push(fiber)
 }

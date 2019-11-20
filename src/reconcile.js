@@ -1,4 +1,5 @@
 import { UPDATE, PLACEMENT, DELETION } from './types'
+import { pushDeletion } from './concurrent'
 
 /**
  *
@@ -35,6 +36,7 @@ export function reconcileChildren (wipFiber, elements) {
       }
     } else if (oldFiber && !isSameType) {
       oldFiber.effectTag = DELETION
+      pushDeletion(oldFiber)
     }
 
     if (oldFiber) {

@@ -15,7 +15,9 @@
       childrenP.push(Treact.createElement('p', {}, `Hello P${index}`))
     }
 
-
+    function Component(props) {
+      return Treact.createElement('p', {}, `Hello Component, My name is : ${props.name}`)
+    }
 
     Treact.render(
       Treact.createElement(
@@ -25,6 +27,7 @@
         Treact.createElement('p', {}, 'Hello P'),
         Treact.createElement('p', {}, 'Hello P2'),
         Treact.createElement('p', {}, 'Hello P3'),
+        Treact.createElement(Component, {name: 'Wangyudan'}),
         ...childrenP
       ),
       document.getElementById('app')
