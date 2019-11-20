@@ -1,10 +1,12 @@
-import { setUnitOfWork } from './concurrent'
+import { setUnitOfWork, setWipRoot } from './concurrent'
 
 export default function render (element, container) {
-  setUnitOfWork({
+  const fiberRoot = {
     dom: container,
     props: {
       children: [element]
     }
-  })
+  }
+  setUnitOfWork(fiberRoot)
+  setWipRoot(fiberRoot)
 }

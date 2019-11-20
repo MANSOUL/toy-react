@@ -6,6 +6,22 @@ import { createDOM, setProperty } from './dom'
  */
 
 let unitOfWork = null
+let wipRoot = null // 保存fiber tree的根结点， work in progress root
+
+function commitRoot () {
+  commitWork(wipRoot.child)
+  wipRoot = null
+}
+
+function commitWork (fiber) {
+  if (!fiber) {
+    return
+  }
+  const parentDOM = fiber.parent.dom
+  parentDOM.appendChild(fiber.dom)
+  commitWork(fiber.child)
+  commitWork(fiber.sibling)
+}
 
 /**
  * 浏览器空闲时执行工作
@@ -16,7 +32,12 @@ function workLoop (deadline) {
 
   while (unitOfWork && !shouldPause) {
     unitOfWork = performUnitOfWork(unitOfWork)
-    shouldPause = deadline.timeRemaining() < 1
+    shouldPause = deadline.timeRemaining() < 20
+  }
+
+  // 避免渲染部分UI
+  if (!unitOfWork && wipRoot) {
+    commitRoot()
   }
 
   window.requestIdleCallback(workLoop)
@@ -32,13 +53,10 @@ window.requestIdleCallback(workLoop)
  * @param {Fiber} fiber
  */
 function performUnitOfWork (fiber) {
-  const { type, dom, parent, props } = fiber
+  const { type, dom, props } = fiber
   if (!dom) {
     fiber.dom = createDOM(type)
     setProperty(fiber.dom, props)
-  }
-  if (parent) {
-    parent.dom.appendChild(fiber.dom)
   }
 
   let index = 0
@@ -76,4 +94,8 @@ function performUnitOfWork (fiber) {
 
 export function setUnitOfWork (work) {
   unitOfWork = work
+}
+
+export function setWipRoot (fiberRoot) {
+  wipRoot = fiberRoot
 }
