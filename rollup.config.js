@@ -6,7 +6,8 @@ export default {
   output: {
     file: 'dist/bundle.js',
     name: 'Treact',
-    format: 'umd'
+    format: 'umd',
+    sourcemap: 'inline'
   },
   plugins: [
     serve('dist'),
