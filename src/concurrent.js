@@ -86,8 +86,6 @@ function performUnitOfWork (fiber) {
     updateHostComponent(fiber)
   }
 
-  reconcileChildren(fiber, fiber.props.children)
-
   if (fiber.child) {
     return fiber.child
   }
@@ -111,6 +109,7 @@ function updateHostComponent (fiber) {
     fiber.dom = createDOM(type)
     updateDOM(fiber.dom, {}, props)
   }
+  reconcileChildren(fiber, props.children)
 }
 
 export function setUnitOfWork (work) {
