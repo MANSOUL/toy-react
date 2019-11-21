@@ -57,10 +57,18 @@ function commitWork (fiber) {
   } else if (fiber.effectTag === UPDATE) {
     updateDOM(fiber.dom, fiber.alternate.props, fiber.props)
   } else if (fiber.effectTag === DELETION) {
-
+    commitDeletion(fiber, parentDOM)
   }
   commitWork(fiber.child)
   commitWork(fiber.sibling)
+}
+
+function commitDeletion (fiber, domParent) {
+  if (fiber.dom) {
+    domParent.removeChild(fiber.dom)
+  } else {
+    commitDeletion(fiber.child, domParent)
+  }
 }
 
 /**
@@ -176,7 +184,7 @@ export function reconcileChildren (wipFiber, elements) {
   let prevSibling = null
   let oldFiber = wipFiber.alternate && wipFiber.alternate.child
 
-  while (index < elements.length) {
+  while (index < elements.length || oldFiber != null) {
     const element = elements[index]
     const isSameType = oldFiber && element && oldFiber.type === element.type
     let newFiber = null
