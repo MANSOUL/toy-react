@@ -1,6 +1,5 @@
 import createElement from './createElement'
-import render from './render'
-import { useState } from './concurrent'
+import { useState, render } from './reconcile'
 
 export default {
   createElement,

@@ -1,4 +1,4 @@
-import { TEXT_ELEMENT } from './types'
+import { TEXT_ELEMENT } from './constants'
 import { isProperty, isNew, isGone, isEvent } from './utils'
 
 /**

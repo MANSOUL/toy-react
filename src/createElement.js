@@ -1,12 +1,12 @@
-import {TEXT_ELEMENT} from './types'
+import { TEXT_ELEMENT } from './constants'
 
-export default function createElement(type, props, ...children) {
+export default function createElement (type, props, ...children) {
   return {
     type,
     props: {
       ...props,
       children: children.map(child => {
-        return typeof child === 'string' 
+        return typeof child === 'string'
           ? createTextElement(child)
           : child
       })
@@ -14,7 +14,7 @@ export default function createElement(type, props, ...children) {
   }
 }
 
-function createTextElement(text) {
+function createTextElement (text) {
   return {
     type: TEXT_ELEMENT,
     props: {
