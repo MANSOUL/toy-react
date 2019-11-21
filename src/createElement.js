@@ -1,7 +1,8 @@
 import { TEXT_ELEMENT } from './constants'
+import { flat } from './utils'
 
 export default function createElement (type, props, ...children) {
-  children = children.flat()
+  children = flat(children)
   return {
     type,
     props: {

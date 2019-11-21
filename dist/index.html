@@ -21,12 +21,12 @@
         Treact.createElement('p', null, `Click ${count} times`),
           Treact.createElement('button', {
           onClick: () => {
-            setCount((c) => c - 1)
+            setCount((c) => 3)
           }
         }, `Click Me -1`),
         Treact.createElement('button', {
           onClick: () => {
-            setCount((c) => c + 1)
+            setCount((c) => 5)
           }
         }, `Click Me +1`),
         elements
@@ -37,7 +37,12 @@
       Treact.createElement(
         'div',
         null,
-        Treact.createElement('h1', {}, 'Hello World!'),
+        Treact.t(`
+          <h1>Hello World!</h1>
+        `),
+        Treact.t(`
+          <h1>Hello function t!</h1>
+        `),
         Treact.createElement(Counter)
       ),
       document.getElementById('app')
