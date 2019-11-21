@@ -24,11 +24,14 @@ import { UPDATE, PLACEMENT, DELETION } from './constants'
 
 let unitOfWork = null // 时间切片：当前所要进行工作的Fiber单元
 let wipRoot = null // 保存fiber tree的根结点， work in progress root
-let deletions = []
+const deletions = []
 let currentRoot = null // 记录当前工作到哪个节点
 
 function commitRoot () {
-  deletions.forEach(commitWork)
+  let deletion = null
+  while ((deletion = deletions.shift())) {
+    commitWork(deletion)
+  }
   commitWork(wipRoot.child)
   currentRoot = wipRoot
   wipRoot = null
@@ -58,6 +61,7 @@ function commitWork (fiber) {
     updateDOM(fiber.dom, fiber.alternate.props, fiber.props)
   } else if (fiber.effectTag === DELETION) {
     commitDeletion(fiber, parentDOM)
+    return
   }
   commitWork(fiber.child)
   commitWork(fiber.sibling)
@@ -157,7 +161,6 @@ export function useState (initial) {
       alternate: currentRoot
     }
     unitOfWork = wipRoot
-    deletions = []
   }
 
   wipFiber.hooks.push(hook)
@@ -218,7 +221,7 @@ export function reconcileChildren (wipFiber, elements) {
 
     if (index === 0) {
       wipFiber.child = newFiber
-    } else {
+    } else if (prevSibling != null) {
       prevSibling.sibling = newFiber
     }
 
