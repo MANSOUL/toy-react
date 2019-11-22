@@ -4,20 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<<<<<<< HEAD
   <title>Document</title>
+=======
+  <title>测试组件Component</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background-color: #fafafa;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+    }
+
+    p {
+      margin: 10px;
+      user-select: none;
+      cursor: pointer;
+    }
+    
+    span {
+      color: #0d3529;
+    }
+
+
+  </style>
+>>>>>>> 541eee4e70b828a89ac4e4ca3c270ae172b9a9d0
 </head>
 <body>
   <div id="app"></div>
   <script src="./bundle.js"></script>
   <script>
+<<<<<<< HEAD
   function Counter() {
       const [count, setCount] = Treact.useState(0)
+=======
+    const {t, Component, render, ast, renderVDOM, vdom } = toyReact;
+>>>>>>> 541eee4e70b828a89ac4e4ca3c270ae172b9a9d0
 
       const elements = []
       for (let i = 0; i < count; i++) {
         elements.push(Treact.t`<h5>i am ${i} element.</h5>`)
       }
 
+<<<<<<< HEAD
       return Treact.t`
         <div>
           <p>Click ${count} times</p>
@@ -30,6 +63,43 @@
           ${elements}
         </div>
       `
+=======
+    class HelloWorld extends Component {
+      constructor(props) {
+        super(props)
+        this.state = {
+          count: 0
+        }
+      }
+
+      handleClick = () => {
+        this.state.count++
+        const index = this.$vdom.$parent.children.indexOf(this.$vdom)
+        if(~index) {
+          const $vdom = vdom(ast(this.render()))
+          $vdom.$parent = this.$vdom.$parent
+          this.$vdom.$parent.children[index] = $vdom
+          this.$vdom = $vdom
+        }
+        renderVDOM(window.vdomTree, document.getElementById('app'))
+      }
+
+      render () {
+        console.log(this.props)
+        return t`
+          <p onClick=${this.handleClick}>
+            <${HelloChildren} />
+            <span>${this.state.count}</span>
+            ${this.props.children}
+            ${
+              this.props.greeting.split('').map((c, index) => {
+                return t`<span key=${index}>${c}</span>`
+              })
+            }
+          </p>
+        `
+      }
+>>>>>>> 541eee4e70b828a89ac4e4ca3c270ae172b9a9d0
     }
 
     Treact.render(
