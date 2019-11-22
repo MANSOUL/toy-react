@@ -15,3 +15,7 @@ export const flat = arr => (
 export const trim = s => {
   return s.replace(/^[\s\n]+|\s+$/g, '')
 }
+
+const type = o => Object.prototype.toString.call(o).slice(8, -1).toLowerCase()
+export const isPrimitive = o => ['number', 'string', 'boolean'].indexOf(type(o)) !== -1
+export const isNullOrUndefined = o => ['null', 'undefined'].indexOf(type(o)) !== -1

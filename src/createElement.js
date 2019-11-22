@@ -4,6 +4,7 @@ import { flat } from './utils'
 export default function createElement (type, props, ...children) {
   children = flat(children)
   return {
+    isElement: true,
     type,
     props: {
       ...props,
@@ -18,6 +19,7 @@ export default function createElement (type, props, ...children) {
 
 function createTextElement (text) {
   return {
+    isElement: true,
     type: TEXT_ELEMENT,
     props: {
       nodeValue: text,

@@ -1,5 +1,6 @@
-import { trim, isPrimitive, isNullOrUndefined, flat } from '../utils'
-import createElement from '../createElement'
+const trim = s => {
+  return s.replace(/^[\s\n]+|\s+$/g, '')
+}
 
 const regTagStart = /^<(\w+)\s*([^>]*)\s*>/
 const regTagClose = /^<\/(\w+)\s*>/
@@ -10,12 +11,6 @@ const TAG_CLOSE = 'TAG_CLOSE'
 const TAG_VALUE = 'TAG_VALUE'
 const TAG_ATTR_NAME = 'TAG_ATTR_NAME'
 const TAG_ATTR_VALUE = 'TAG_ATTR_VALUE'
-const isObjectValue = key => /PresetObject\d+/.test(key)
-const getObjectValue = (objects, key) => {
-  const regExp = /PresetObject\d+/
-  return objects[regExp.exec(key)[0]]
-}
-let globalObjects = null
 
 const parseToken = template => {
   let type = ''
@@ -93,11 +88,11 @@ const parseSyntax = tokens => {
   }
 
   while (nextToken) {
-    let value = nextToken.value
-    if (isObjectValue(value)) {
-      value = getObjectValue(globalObjects, value)
-    }
     if (nextToken.type === TAG_START) {
+      let value = nextToken.value
+      if (isObjectValue(value)) {
+        value = getObjectValue(globalObjects, value)
+      }
       const tempRoot = {
         type: value,
         children: [],
@@ -113,8 +108,16 @@ const parseSyntax = tokens => {
     } else if (nextToken.type === TAG_ATTR_NAME) {
       attrName = nextToken.value
     } else if (nextToken.type === TAG_ATTR_VALUE) {
+      let value = nextToken.value
+      if (isObjectValue(value)) {
+        value = getObjectValue(globalObjects, value)
+      }
       current.props[attrName] = value
     } else if (nextToken.type === TAG_VALUE) {
+      let value = nextToken.value
+      if (isObjectValue(value)) {
+        value = getObjectValue(globalObjects, value)
+      }
       current.children.push(value)
     }
 
@@ -124,6 +127,9 @@ const parseSyntax = tokens => {
   return tree.children[0]
 }
 
+const type = o => Object.prototype.toString.call(o).slice(8, -1).toLowerCase()
+const isPrimitive = o => ['number', 'string', 'boolean'].indexOf(type(o)) !== -1
+const isNullOrUndefined = o => ['null', 'undefined'].indexOf(type(o)) !== -1
 const isExistIn = (objects, value) => {
   const keys = Object.keys(objects)
   for (let i = 0; i < keys.length; i++) {
@@ -134,7 +140,12 @@ const isExistIn = (objects, value) => {
   }
   return null
 }
-
+const isObjectValue = key => /PresetObject\d+/.test(key)
+const getObjectValue = (objects, key) => {
+  const regExp = /PresetObject\d+/
+  return objects[regExp.exec(key)[0]]
+}
+let globalObjects = null
 const preset = (statics, ...entities) => {
   const objects = {}
   let template = ''
@@ -160,20 +171,29 @@ const preset = (statics, ...entities) => {
   }
   template += statics[i]
   globalObjects = objects
+  console.log(objects)
   return template
 }
 
-const convertToElements = tree => {
-  if (tree.isElement) {
-    return tree
-  }
-  const children = tree.children ? flat(tree.children).map(convertToElements) : []
-  return typeof tree === 'object' ? createElement(tree.type, tree.props, ...children) : tree
+function App () {
+
 }
 
-export const t = (statics, ...entities) => {
-  const template = preset(statics, ...entities)
-  const tokens = parseLexical(template)
-  const syntax = parseSyntax(tokens)
-  return convertToElements(syntax)
-}
+const name = 'heihei'
+const template = preset`
+  <${App} onClick="${() => {}}">
+    <p>${
+      [1, 2, 3].map(item => `<span>hello item ${item}</span>`)
+    }</p>
+    ${
+      [1, 2, 3].map(item => `<p>hello item ${item}</p>`)
+    }
+    <p>${name}</p>
+    <p>${null}</p>
+    <p>${undefined}</p>
+  </${App}>
+`
+
+console.log(parseLexical(template))
+console.log(parseSyntax(parseLexical(template)))
+console.log(JSON.stringify(parseSyntax(parseLexical(template))))
