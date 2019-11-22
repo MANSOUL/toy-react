@@ -22,10 +22,10 @@
         <div>
           <p>Click ${count} times</p>
           <button onClick="${() => {
-            setCount((c) => 3)
+            setCount((c) => c - 1)
           }}">Click Me -1</button>
           <button onClick="${() => {
-            setCount((c) => 5)
+            setCount((c) => c + 1)
           }}">Click Me +1</button>
           ${elements}
         </div>
