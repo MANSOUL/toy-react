@@ -57,11 +57,3 @@ Treact.render(
 ### Try Me
 
 [在codesandbox中试一下](https://codesandbox.io/s/loving-surf-3cbtq?fontsize=14&hidenavigation=1&theme=dark)
-
-<iframe
-  src="https://codesandbox.io/embed/loving-surf-3cbtq?fontsize=14&hidenavigation=1&theme=dark"
-  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-  title="loving-surf-3cbtq"
-  allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
-  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-></iframe>
