@@ -84,7 +84,7 @@ function workLoop (deadline) {
 
   while (unitOfWork && !shouldPause) {
     unitOfWork = performUnitOfWork(unitOfWork)
-    shouldPause = deadline.timeRemaining() < 20
+    shouldPause = deadline.timeRemaining() < 1
   }
 
   // 避免渲染部分UI
