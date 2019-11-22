@@ -15,36 +15,30 @@
 
       const elements = []
       for (let i = 0; i < count; i++) {
-        elements.push(Treact.createElement('h5', null, `i am ${i} element.`))
+        elements.push(Treact.t`<h5>i am ${i} element.</h5>`)
       }
-      return Treact.createElement('div', null, 
-        Treact.createElement('p', null, `Click ${count} times`),
-          Treact.createElement('button', {
-          onClick: () => {
+
+      return Treact.t`
+        <div>
+          <p>Click ${count} times</p>
+          <button onClick="${() => {
             setCount((c) => 3)
-          }
-        }, `Click Me -1`),
-        Treact.createElement('button', {
-          onClick: () => {
+          }}">Click Me -1</button>
+          <button onClick="${() => {
             setCount((c) => 5)
-          }
-        }, `Click Me +1`),
-        elements
-      )
+          }}">Click Me +1</button>
+          ${elements}
+        </div>
+      `
     }
 
     Treact.render(
-      Treact.createElement(
-        'div',
-        null,
-        Treact.t(`
-          <h1>Hello World!</h1>
-        `),
-        Treact.t(`
-          <h1>Hello function t!</h1>
-        `),
-        Treact.createElement(Counter)
-      ),
+      Treact.t`
+        <div>
+          <h1 id="heihei" title="jack">Hello World!</h1>
+          <${Counter}></${Counter}>
+          </div>
+      `,
       document.getElementById('app')
     )
   </script>
